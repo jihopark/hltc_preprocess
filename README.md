@@ -1,6 +1,9 @@
 # hltc_preprocess
 Preprocessing library for our lab's use
 
+## Setup
+`pip install hltc_preprocess`
+
 ## Modules
 1. vocabulary.py
 	- `create_vocabulary`
