@@ -11,6 +11,8 @@ import sys
 import re
 import string
 
+from nltk import TweetTokenizer
+
 FLAGS = re.MULTILINE | re.DOTALL
 
 
@@ -18,6 +20,26 @@ def hashtag(text):
     text = text.group()
     hashtag_body = text[1:]
     return hashtag_body
+
+def num_words(sent):
+    return len(re.findall(r'\w+',sent))
+
+def filter_tweets(texts, remove_url=True, remove_quotation=True, min_words=5):
+    assert isinstance(texts, list)
+
+    texts = list(filter(lambda x:
+                            (not remove_url or not ("http://" in x or
+                                "https://" in x or "<url>" in x))
+                            and
+                            (not remove_quotation or "\"" not in x)
+                            and
+                            (num_words(x) >= min_words),
+                            texts))
+    return texts
+
+def tokenize_tweets(texts, bigram=False):
+    tknzr = TweetTokenizer()
+    return [tknzr.tokenize(t) for t in texts]
 
 def clean_tweet(text,
                 remove_nonalphanumeric=False,
