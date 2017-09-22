@@ -25,29 +25,28 @@ def num_words(sent):
     return len(re.findall(r'\w+',sent))
 
 def filter_tweets(texts, is_xy_tuple=False, remove_url=True,
-                  remove_quotation=True, min_words=3, verbose=False):
+                  remove_quotation=True, min_words=3, max_words=None,
+                  verbose=False):
     assert isinstance(texts, list)
     if verbose:
         print("%s tweets before filter" % len(texts))
-    if is_xy_tuple:
-        texts = list(filter(lambda x:
-                                    (not remove_url or not ("http://" in x[0] or
-                                        "https://" in x[0] or "<url>" in x[0]))
-                                    and
-                                    (not remove_quotation or "\"" not in x[0])
-                                    and
-                                    (num_words(x[0]) >= min_words),
-                                    texts))
+    if not is_xy_tuple:
+        texts = zip(texts, [0 for _ in range(len(texts))])
 
-    else:
-        texts = list(filter(lambda x:
-                                (not remove_url or not ("http://" in x or
-                                    "https://" in x or "<url>" in x))
-                                and
-                                (not remove_quotation or "\"" not in x)
-                                and
-                                (num_words(x) >= min_words),
-                                texts))
+    texts = list(filter(lambda x:
+                        (not remove_url or not ("http://" in x[0] or
+                                                "https://" in x[0] or "<url>" in x[0]))
+                        and
+                        (not remove_quotation or "\"" not in x[0])
+                        and
+                        (max_words is None or num_words(x[0]) <=
+                         max_words)
+                        and
+                        (num_words(x[0]) >= min_words),
+                        texts))
+    if not is_xy_tuple:
+        texts, _ = zip(*texts)
+        texts = list(texts)
     if verbose:
         print("%s tweets after filter" % len(texts))
     return texts
