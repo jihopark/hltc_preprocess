@@ -61,11 +61,12 @@ def clean_tweet(text,
     if remove_hashtag_at_end:
         text = re.sub(r"(^.*?)(#[\S]+\s+)*#[\S]+$", r"\1", text.strip())
 
+    # removes url
+    text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
+ 
     if remove_nonalphanumeric:
         text = re_sub(r'([^\s\w]|_)+', "")
 
-    # removes url
-    text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
     text = re_sub(r"/", " / ")
     if use_user_special_token:
         text = re_sub(r"@\w+", "<user>")
