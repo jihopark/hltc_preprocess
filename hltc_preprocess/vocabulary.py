@@ -59,5 +59,9 @@ def find_phrases(tokenized_texts, min_count=5, threshold=10.0):
     bigram = Phraser(phrases)
     print("found. now tokenizing")
     bigram_tokenized_list = list(bigram[tokenized_texts])
-    return bigram_tokenized_list
+    print("returning tokenized list and phraser model. save the model if needed")
+    return bigram_tokenized_list, bigram
 
+def load_phraser(file_path):
+    from gensim.models.phrases import Phrases, Phraser
+    return Phraser.load(file_path)
