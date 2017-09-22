@@ -24,20 +24,35 @@ def hashtag(text):
 def num_words(sent):
     return len(re.findall(r'\w+',sent))
 
-def filter_tweets(texts, remove_url=True, remove_quotation=True, min_words=5):
+def filter_tweets(texts, is_xy_tuple=False, remove_url=True,
+                  remove_quotation=True, min_words=3, verbose=False):
     assert isinstance(texts, list)
+    if verbose:
+        print("%s tweets before filter" % len(texts))
+    if is_xy_tuple:
+        texts = list(filter(lambda x:
+                                    (not remove_url or not ("http://" in x[0] or
+                                        "https://" in x[0] or "<url>" in x[0]))
+                                    and
+                                    (not remove_quotation or "\"" not in x[0])
+                                    and
+                                    (num_words(x[0]) >= min_words),
+                                    texts))
 
-    texts = list(filter(lambda x:
-                            (not remove_url or not ("http://" in x or
-                                "https://" in x or "<url>" in x))
-                            and
-                            (not remove_quotation or "\"" not in x)
-                            and
-                            (num_words(x) >= min_words),
-                            texts))
+    else:
+        texts = list(filter(lambda x:
+                                (not remove_url or not ("http://" in x or
+                                    "https://" in x or "<url>" in x))
+                                and
+                                (not remove_quotation or "\"" not in x)
+                                and
+                                (num_words(x) >= min_words),
+                                texts))
+    if verbose:
+        print("%s tweets after filter" % len(texts))
     return texts
 
-def tokenize_tweets(texts, bigram=False):
+def tokenize_tweets(texts):
     tknzr = TweetTokenizer()
     return [tknzr.tokenize(t) for t in texts]
 
@@ -57,16 +72,15 @@ def clean_tweet(text,
     # function so code less repetitive
     def re_sub(pattern, repl):
         return re.sub(pattern, repl, text, flags=FLAGS)
+    text = re_sub(u'\xa0', "")
 
     if remove_hashtag_at_end:
         text = re.sub(r"(^.*?)(#[\S]+\s+)*#[\S]+$", r"\1", text.strip())
 
-    # removes url
-    text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
- 
     if remove_nonalphanumeric:
         text = re_sub(r'([^\s\w]|_)+', "")
 
+    text = re_sub(r"(http)\S+", "<url>")
     text = re_sub(r"/", " / ")
     if use_user_special_token:
         text = re_sub(r"@\w+", "<user>")
