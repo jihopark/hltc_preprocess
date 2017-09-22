@@ -13,3 +13,5 @@ Preprocessing library for our lab's use
 	- `filter_tweet`
 	- `tokenize_tweets`
 
+## How to upload to pip
+http://peterdowns.com/posts/first-time-with-pypi.html
