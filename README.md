@@ -7,6 +7,7 @@ Preprocessing library for our lab's use
 ## Modules
 1. vocabulary.py
 	- `create_vocabulary`
+	- `idx_tokens`
 	- `find_phrases`
 2. `tweets.py`
 	- `clean_tweet`
