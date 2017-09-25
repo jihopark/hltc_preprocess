@@ -62,7 +62,7 @@ def clean_tweet(text,
         text = re.sub(r"(^.*?)(#[\S]+\s+)*#[\S]+$", r"\1", text.strip())
 
     if remove_nonalphanumeric:
-        text = re_sub(r'([^\s\w]|_)+', "")
+        text = re_sub(r'([^\s\w\@]|_)+', "")
 
     # removes url
     text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
