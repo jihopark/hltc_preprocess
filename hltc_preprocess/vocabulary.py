@@ -1,6 +1,7 @@
 from collections import Counter
 
-def create_vocabulary(tokenized_texts, special_tokens=None, min_freq=10):
+def create_vocabulary(tokenized_texts, special_tokens=None, min_freq=10,
+                      includeCounter=False):
     vocab = ["UNK"]
     if special_tokens is not None:
         vocab += special_tokens
@@ -9,9 +10,13 @@ def create_vocabulary(tokenized_texts, special_tokens=None, min_freq=10):
     for t in tokenized_texts:
         words += t
     counter = Counter(words)
-    for word in counter:
+    for word in list(counter):
+        if word in special_tokens:
+            del counter[word]
         if counter[word] > min_freq:
             vocab.append(word)
+        else:
+            del counter[word]
 
     reverse_vocab = {}
     _vocab = {}
@@ -19,7 +24,11 @@ def create_vocabulary(tokenized_texts, special_tokens=None, min_freq=10):
         _vocab[word] = i
         reverse_vocab[i] = word
     print("finished building vocab. total words %s" % len(vocab))
-    return ({"word2id":_vocab, "id2word":reverse_vocab},
+
+    output = {"word2id":_vocab, "id2word":reverse_vocab}
+    if includeCounter:
+        output["word2counter"] = counter
+    return (output,
             [[(_vocab[word] if word in _vocab else 0) for word in text] for text in tokenized_texts])
 
 def idx_tokens(tokenized_texts, vocab, vocab_type="word2id", print_oov=False):
