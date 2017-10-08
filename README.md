@@ -13,8 +13,5 @@ Preprocessing library for our lab's use
 	- `clean_tweet`
 	- `filter_tweet`
 	- `tokenize_tweets`
-3. `seq2seq.py`
-	- `add_padding`
-	- `add_position_token`
 ## How to upload to pip
 http://peterdowns.com/posts/first-time-with-pypi.html
