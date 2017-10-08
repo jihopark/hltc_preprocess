@@ -13,10 +13,11 @@ def create_vocabulary(tokenized_texts, special_tokens=None, min_freq=10,
     for word in list(counter):
         if word in special_tokens:
             del counter[word]
-        if counter[word] > min_freq:
-            vocab.append(word)
         else:
-            del counter[word]
+            if counter[word] > min_freq:
+                vocab.append(word)
+            else:
+                del counter[word]
 
     reverse_vocab = {}
     _vocab = {}
