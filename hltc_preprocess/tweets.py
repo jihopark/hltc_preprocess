@@ -63,6 +63,7 @@ def clean_tweet(text,
                 make_hashtag_as_word=True,
                 deal_repetition=True,
                 preserve_case=False,
+                keep_emoji_at_end=False,
                 replace_newline=True,
                 remove_hashtag_at_end=False):
    # Different regex parts for smiley faces
@@ -77,11 +78,13 @@ def clean_tweet(text,
         text = re_sub("\n", " ")
         text = re_sub("&amp;", " ")
 
+    if keep_emoji_at_end:
+        _reg = '[\U00010000-\U0010ffff]'
+        emojis = re.compile(_reg, flags=re.UNICODE).findall(text)
+        text = re_sub(_reg, " ")
+
     if remove_hashtag_at_end:
         text = re.sub(r"(^.*?)(#[\S]+\s+)*#[\S]+$", r"\1", text.strip())
-
-    if remove_nonalphanumeric:
-        text = re_sub(r'([^\s\w\@]|_)+', "")
 
     text = re_sub(r"(http)\S+", "<url>")
     text = re_sub(r"/", " / ")
@@ -102,6 +105,11 @@ def clean_tweet(text,
     if deal_repetition:
         text = re_sub(r"([!?.]){2,}", r"\1")
         text = re_sub(r"\b(\S*?)(.)\2{2,}\b", r"\1\2")
+    if keep_emoji_at_end:
+        text += (" " + " ".join(emojis))
+
+    if remove_nonalphanumeric:
+        text = re_sub(r"([^\s\w\@!?<>]|_)+", "")
     if preserve_case:
         return text
     return text.lower()
