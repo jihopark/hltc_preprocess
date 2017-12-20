@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'hltc_preprocess',
   packages = ['hltc_preprocess'], # this must be the same as the name above
-  version = '0.8.1',
+  version = '0.9.0',
   description = 'Text Preprocessing scripts for lab use',
   author = 'Ji Ho Park',
   author_email = 'jhpark@connect.ust.hk',
