@@ -105,11 +105,10 @@ def clean_tweet(text,
     if deal_repetition:
         text = re_sub(r"([!?.]){2,}", r"\1")
         text = re_sub(r"\b(\S*?)(.)\2{2,}\b", r"\1\2")
-    if keep_emoji_at_end:
-        text += (" " + " ".join(emojis))
-
     if remove_nonalphanumeric:
         text = re_sub(r"([^\s\w\@!?<>]|_)+", "")
+    if keep_emoji_at_end:
+        text += (" " + " ".join(emojis))
     if preserve_case:
         return text
     return text.lower()
