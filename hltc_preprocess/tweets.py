@@ -63,6 +63,7 @@ def clean_tweet(text,
                 make_hashtag_as_word=True,
                 deal_repetition=True,
                 preserve_case=False,
+                replace_newline=True,
                 remove_hashtag_at_end=False):
    # Different regex parts for smiley faces
     eyes = r"[8:=;]"
@@ -72,6 +73,9 @@ def clean_tweet(text,
     def re_sub(pattern, repl):
         return re.sub(pattern, repl, text, flags=FLAGS)
     text = re_sub(u'\xa0', "")
+    if replace_newline:
+        text = re_sub("\n", " ")
+        text = re_sub("&amp;", " ")
 
     if remove_hashtag_at_end:
         text = re.sub(r"(^.*?)(#[\S]+\s+)*#[\S]+$", r"\1", text.strip())
