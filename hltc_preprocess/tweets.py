@@ -10,8 +10,9 @@ http://nlp.stanford.edu/projects/glove/preprocess-twitter.rb
 import sys
 import re
 import string
-
+from collections import Counter
 from nltk import TweetTokenizer
+import wordsegment
 
 FLAGS = re.MULTILINE | re.DOTALL
 
@@ -51,9 +52,36 @@ def filter_tweets(texts, is_xy_tuple=False, remove_url=True,
         print("%s tweets after filter" % len(texts))
     return texts
 
-def tokenize_tweets(texts):
+def tokenize_tweets(texts, segment=True, segment_vocab=None):
     tknzr = TweetTokenizer()
-    return [tknzr.tokenize(t) for t in texts]
+    token_x = [tknzr.tokenize(t) for t in texts]
+    if not segment:
+        return token_x
+
+	# if need to segment
+    wordsegment.load()
+    tokens = []
+    for line in token_x:
+        tokens += line
+    counter = Counter(tokens)
+    # identify segment-able words
+    segmented = {}
+    for word in counter:
+        if word not in segment_vocab:
+            segment = wordsegment.segment(word)
+            if len(segment) > 1:
+                segmented[word] = segment
+    # reconstruct the list 
+    _token_x = []
+    for line in token_x:
+        _line = []
+        for token in line:
+            if token in segmented.keys():
+                _line += segmented[token]
+            else:
+                _line.append(token)
+        _token_x.append(_line)
+    return _token_x
 
 def clean_tweet(text,
                 remove_nonalphanumeric=False,
